@@ -1,8 +1,9 @@
 {
-  "name": "genwear-ecommerce",
+  "name": "genwear",
   "version": "2.0.0",
   "scripts": {
-    "build": "cd client && npm run build",
-    "start": "cd server && npm start"
-  }
+    "build": "cd client && npm install && npm run build",
+    "start": "cd client && npm run preview"
+  },
+  "workspaces": ["client", "server"]
 }
