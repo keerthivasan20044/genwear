@@ -27,6 +27,8 @@ const MOCK_PRODUCTS = [
     category: 'topwear',
     gender: 'men',
     brand: 'GENWEAR',
+    colors: ['White', 'Black', 'Navy'],
+    sizes: ['S', 'M', 'L', 'XL'],
     stock: 50,
     isActive: true,
     rating: 4.5,
@@ -40,10 +42,102 @@ const MOCK_PRODUCTS = [
     category: 'outerwear',
     gender: 'unisex',
     brand: 'GENWEAR',
+    colors: ['Blue', 'Black'],
+    sizes: ['S', 'M', 'L', 'XL'],
     stock: 25,
     isActive: true,
     rating: 4.8,
     description: 'Classic denim jacket with modern fit.'
+  },
+  {
+    _id: '3',
+    name: 'Women\'s Floral Dress',
+    price: 79.99,
+    images: ['https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500'],
+    category: 'topwear',
+    gender: 'women',
+    brand: 'GENWEAR',
+    colors: ['Floral', 'Black'],
+    sizes: ['XS', 'S', 'M', 'L'],
+    stock: 30,
+    isActive: true,
+    rating: 4.6,
+    description: 'Elegant floral dress for special occasions.'
+  },
+  {
+    _id: '4',
+    name: 'Men\'s Chino Pants',
+    price: 59.99,
+    images: ['https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=500'],
+    category: 'bottomwear',
+    gender: 'men',
+    brand: 'GENWEAR',
+    colors: ['Khaki', 'Navy', 'Black'],
+    sizes: ['30', '32', '34', '36'],
+    stock: 40,
+    isActive: true,
+    rating: 4.4,
+    description: 'Comfortable chino pants for casual wear.'
+  },
+  {
+    _id: '5',
+    name: 'Kids Rainbow Hoodie',
+    price: 39.99,
+    images: ['https://images.unsplash.com/photo-1503944583220-79d8926ad5e2?w=500'],
+    category: 'topwear',
+    gender: 'kids',
+    brand: 'GENWEAR',
+    colors: ['Rainbow', 'Pink', 'Blue'],
+    sizes: ['4-5Y', '6-7Y', '8-9Y', '10-11Y'],
+    stock: 20,
+    isActive: true,
+    rating: 4.7,
+    description: 'Colorful hoodie perfect for kids.'
+  },
+  {
+    _id: '6',
+    name: 'Leather Sneakers',
+    price: 129.99,
+    images: ['https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500'],
+    category: 'footwear',
+    gender: 'unisex',
+    brand: 'GENWEAR',
+    colors: ['White', 'Black', 'Brown'],
+    sizes: ['7', '8', '9', '10', '11'],
+    stock: 35,
+    isActive: true,
+    rating: 4.9,
+    description: 'Premium leather sneakers for style and comfort.'
+  },
+  {
+    _id: '7',
+    name: 'Women\'s Yoga Leggings',
+    price: 49.99,
+    images: ['https://images.unsplash.com/photo-1506629905607-d9c297d3d45b?w=500'],
+    category: 'bottomwear',
+    gender: 'women',
+    brand: 'GENWEAR',
+    colors: ['Black', 'Navy', 'Gray'],
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    stock: 45,
+    isActive: true,
+    rating: 4.5,
+    description: 'High-performance yoga leggings with moisture-wicking fabric.'
+  },
+  {
+    _id: '8',
+    name: 'Classic Watch',
+    price: 199.99,
+    images: ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500'],
+    category: 'accessories',
+    gender: 'unisex',
+    brand: 'GENWEAR',
+    colors: ['Silver', 'Gold', 'Black'],
+    sizes: ['One Size'],
+    stock: 15,
+    isActive: true,
+    rating: 4.8,
+    description: 'Elegant timepiece for any occasion.'
   }
 ]
 
@@ -128,18 +222,82 @@ class MockAPI {
     
     let filteredProducts = [...MOCK_PRODUCTS]
     
+    // Category filter
     if (params.category) {
       filteredProducts = filteredProducts.filter(p => p.category === params.category)
     }
     
+    // Gender filter
     if (params.gender) {
       filteredProducts = filteredProducts.filter(p => p.gender === params.gender || p.gender === 'unisex')
     }
     
-    if (params.search) {
+    // Price range filter
+    if (params.minPrice) {
+      filteredProducts = filteredProducts.filter(p => p.price >= parseFloat(params.minPrice))
+    }
+    if (params.maxPrice) {
+      filteredProducts = filteredProducts.filter(p => p.price <= parseFloat(params.maxPrice))
+    }
+    
+    // Brand filter
+    if (params.brand) {
+      filteredProducts = filteredProducts.filter(p => p.brand.toLowerCase().includes(params.brand.toLowerCase()))
+    }
+    
+    // Color filter
+    if (params.color) {
       filteredProducts = filteredProducts.filter(p => 
-        p.name.toLowerCase().includes(params.search.toLowerCase())
+        p.colors && p.colors.some(color => color.toLowerCase().includes(params.color.toLowerCase()))
       )
+    }
+    
+    // Size filter
+    if (params.size) {
+      filteredProducts = filteredProducts.filter(p => 
+        p.sizes && p.sizes.includes(params.size)
+      )
+    }
+    
+    // Search filter
+    if (params.search) {
+      const searchTerm = params.search.toLowerCase()
+      filteredProducts = filteredProducts.filter(p => 
+        p.name.toLowerCase().includes(searchTerm) ||
+        p.description.toLowerCase().includes(searchTerm) ||
+        p.brand.toLowerCase().includes(searchTerm)
+      )
+    }
+    
+    // Sort products
+    if (params.sort) {
+      switch (params.sort) {
+        case 'price-low':
+          filteredProducts.sort((a, b) => a.price - b.price)
+          break
+        case 'price-high':
+          filteredProducts.sort((a, b) => b.price - a.price)
+          break
+        case 'rating':
+          filteredProducts.sort((a, b) => b.rating - a.rating)
+          break
+        case 'name':
+          filteredProducts.sort((a, b) => a.name.localeCompare(b.name))
+          break
+        default:
+          // Default sort by newest (id)
+          filteredProducts.sort((a, b) => b._id.localeCompare(a._id))
+      }
+    }
+    
+    // Get unique filter options
+    const categories = [...new Set(MOCK_PRODUCTS.map(p => p.category))]
+    const brands = [...new Set(MOCK_PRODUCTS.map(p => p.brand))]
+    const colors = [...new Set(MOCK_PRODUCTS.flatMap(p => p.colors || []))]
+    const sizes = [...new Set(MOCK_PRODUCTS.flatMap(p => p.sizes || []))]
+    const priceRange = {
+      min: Math.min(...MOCK_PRODUCTS.map(p => p.price)),
+      max: Math.max(...MOCK_PRODUCTS.map(p => p.price))
     }
     
     return {
@@ -148,6 +306,13 @@ class MockAPI {
         page: 1,
         totalPages: 1,
         totalProducts: filteredProducts.length
+      },
+      filters: {
+        categories,
+        brands,
+        colors,
+        sizes,
+        priceRange
       }
     }
   }

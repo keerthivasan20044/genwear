@@ -10,7 +10,7 @@ import ScrollToTopButton from './components/common/ScrollToTopButton';
 
 // Lazy load pages
 const Home = lazy(() => import('./pages/Home'));
-const Products = lazy(() => import('./pages/Products'));
+const Products = lazy(() => import('./pages/ProductsNew'));
 const ProductDetail = lazy(() => import('./pages/ProductDetail'));
 const Cart = lazy(() => import('./pages/Cart'));
 const Checkout = lazy(() => import('./pages/Checkout'));

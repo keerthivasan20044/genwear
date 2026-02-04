@@ -81,43 +81,84 @@ const Products = () => {
         <div className="min-h-screen bg-white">
 
             {/* Immersive Header Section */}
-            <section className="pt-40 pb-20 bg-gray-50/50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section className="relative pt-60 pb-32 overflow-hidden bg-black">
+                {/* Background Image with Parallax-like effect */}
+                <motion.div
+                    initial={{ scale: 1.1, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 0.6 }}
+                    transition={{ duration: 1.5 }}
+                    className="absolute inset-0 z-0"
+                >
+                    <img
+                        src="https://images.unsplash.com/photo-1534239233129-14f44ffbb2c9?w=1920&q=90"
+                        alt="Urban Tech Background"
+                        className="w-full h-full object-cover grayscale-[0.3]"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40" />
+                </motion.div>
+
+                {/* Animated Grid Pattern Overlay */}
+                <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none"
+                    style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12">
-                        <div className="max-w-2xl">
-                            <div className="flex items-center gap-4 mb-6">
-                                <span className="w-12 h-[2px] bg-orange-500"></span>
-                                <span className="text-xs font-black text-orange-500 uppercase tracking-[0.4em]">The Network Collection</span>
+                        <motion.div
+                            initial={{ opacity: 0, x: -30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                            className="max-w-2xl"
+                        >
+                            <div className="flex items-center gap-4 mb-8">
+                                <motion.span
+                                    initial={{ width: 0 }}
+                                    animate={{ width: 48 }}
+                                    transition={{ duration: 0.8, delay: 0.5 }}
+                                    className="h-[2px] bg-orange-500"
+                                ></motion.span>
+                                <span className="text-xs font-black text-orange-500 uppercase tracking-[0.5em]">The Network Collection</span>
                             </div>
-                            <h1 className="text-6xl md:text-8xl font-black text-gray-900 leading-none uppercase tracking-tighter mb-8">
-                                Elite <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-700">Apparel</span>
+                            <h1 className="text-7xl md:text-9xl font-black text-white leading-none uppercase tracking-tighter mb-10">
+                                Elite <br /> <span className="text-orange-500">Apparel</span>
                             </h1>
-                            <p className="text-lg font-bold text-gray-500 uppercase tracking-tight leading-relaxed">
+                            <p className="text-lg font-bold text-gray-400 uppercase tracking-tight leading-relaxed max-w-lg">
                                 Technically inspired. Street optimized. Discover the latest drops from the Genwear labs.
                             </p>
-                        </div>
+                        </motion.div>
 
-                        <div className="flex flex-col sm:flex-row items-center gap-4">
-                            <div className="bg-white p-3 rounded-[2rem] shadow-2xl shadow-gray-200 border border-gray-100 flex items-center gap-2">
-                                <div className={`flex items-center gap-2 px-6 py-3 rounded-2xl transition-all ${viewMode === 'grid' ? 'bg-orange-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-900'}`} onClick={() => setViewMode('grid')}>
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.4 }}
+                            className="flex flex-col sm:flex-row items-center gap-6"
+                        >
+                            <div className="bg-white/5 backdrop-blur-xl p-3 rounded-[2.5rem] border border-white/10 flex items-center gap-2">
+                                <button
+                                    className={`flex items-center gap-2 px-8 py-4 rounded-2xl transition-all ${viewMode === 'grid' ? 'bg-orange-600 text-white shadow-2xl shadow-orange-600/20' : 'text-gray-500 hover:text-white'}`}
+                                    onClick={() => setViewMode('grid')}
+                                >
                                     <LayoutGrid size={20} />
-                                    <span className="text-[10px] font-black uppercase tracking-widest hidden sm:block">Grid</span>
-                                </div>
-                                <div className={`flex items-center gap-2 px-6 py-3 rounded-2xl transition-all ${viewMode === 'list' ? 'bg-orange-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-900'}`} onClick={() => setViewMode('list')}>
+                                    <span className="text-[10px] font-black uppercase tracking-widest">Grid</span>
+                                </button>
+                                <button
+                                    className={`flex items-center gap-2 px-8 py-4 rounded-2xl transition-all ${viewMode === 'list' ? 'bg-orange-600 text-white shadow-2xl shadow-orange-600/20' : 'text-gray-500 hover:text-white'}`}
+                                    onClick={() => setViewMode('list')}
+                                >
                                     <LayoutList size={20} />
-                                    <span className="text-[10px] font-black uppercase tracking-widest hidden sm:block">List</span>
-                                </div>
+                                    <span className="text-[10px] font-black uppercase tracking-widest">List</span>
+                                </button>
                             </div>
 
                             <button
                                 onClick={() => setShowFilters(!showFilters)}
-                                className={`px-10 py-6 rounded-[2.5rem] flex items-center gap-4 font-black text-[11px] uppercase tracking-[0.2em] transition-all ${showFilters ? 'bg-orange-600 text-white' : 'bg-gray-900 text-white'
+                                className={`group px-12 py-6 rounded-[2.5rem] flex items-center gap-4 font-black text-[11px] uppercase tracking-[0.2em] transition-all ${showFilters ? 'bg-orange-600 text-white' : 'bg-white text-black hover:bg-orange-600 hover:text-white'
                                     } shadow-2xl hover:scale-105 active:scale-95`}
                             >
-                                <Filter size={20} />
+                                <Filter size={20} className="group-hover:rotate-180 transition-transform duration-500" />
                                 {showFilters ? 'Dismiss Filters' : 'Toggle Filters'}
                             </button>
-                        </div>
+                        </motion.div>
                     </div>
                 </div>
             </section>
@@ -154,8 +195,8 @@ const Products = () => {
                                                 key={cat.value}
                                                 onClick={() => handleFilterChange('category', cat.value)}
                                                 className={`w-full flex items-center justify-between px-6 py-5 rounded-[1.5rem] text-sm font-black transition-all border ${filters.category === cat.value
-                                                        ? 'bg-orange-600 border-orange-600 text-white shadow-xl shadow-orange-100 scale-[1.02]'
-                                                        : 'bg-white border-gray-100 text-gray-600 hover:bg-gray-50'
+                                                    ? 'bg-orange-600 border-orange-600 text-white shadow-xl shadow-orange-100 scale-[1.02]'
+                                                    : 'bg-white border-gray-100 text-gray-600 hover:bg-gray-50'
                                                     }`}
                                             >
                                                 <div className="flex items-center gap-4">
@@ -196,8 +237,8 @@ const Products = () => {
                                                 key={size}
                                                 onClick={() => handleMultiSelect('sizes', size)}
                                                 className={`h-16 rounded-[1rem] flex items-center justify-center text-xs font-black transition-all border ${filters.sizes.includes(size)
-                                                        ? 'bg-gray-900 border-gray-900 text-white shadow-xl'
-                                                        : 'bg-white border-gray-100 text-gray-400 hover:border-gray-300'
+                                                    ? 'bg-gray-900 border-gray-900 text-white shadow-xl'
+                                                    : 'bg-white border-gray-100 text-gray-400 hover:border-gray-300'
                                                     }`}
                                             >
                                                 {size}
