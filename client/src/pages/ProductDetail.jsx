@@ -6,7 +6,7 @@ import { toggleWishlist } from '../redux/slices/wishlistSlice';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Minus, Plus, ShoppingBag, Heart, Star, Check, Truck, Shield, RefreshCcw, ArrowLeft, Share2 } from 'lucide-react';
 import { toast } from 'react-toastify';
-import { mockProducts } from '../data/mockProducts';
+import { MOCK_PRODUCTS } from '../services/mockAPI';
 
 const ProductDetail = () => {
     const { id } = useParams();
@@ -20,7 +20,7 @@ const ProductDetail = () => {
     const product = useMemo(() => {
         const found = apiProducts.find(p => p._id === id);
         if (found) return found;
-        return mockProducts.find(p => p._id === id);
+        return MOCK_PRODUCTS.find(p => p._id === id);
     }, [id, apiProducts]);
 
     const [selectedImg, setSelectedImg] = useState(0);

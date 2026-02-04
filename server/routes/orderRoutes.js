@@ -11,12 +11,15 @@ import { createOrderValidation, mongoIdValidation } from '../middleware/validati
 
 const router = express.Router()
 
+// Customer routes (must come before /:id)
 router.post('/', authenticate, createOrderValidation, createOrder)
 router.get('/myorders', authenticate, getMyOrders)
-router.get('/:id', authenticate, mongoIdValidation, getOrderById)
 
 // Admin Routes
-router.get('/', authenticate, authorizeAdmin, getOrders)
+router.get('/all', authenticate, authorizeAdmin, getOrders)
 router.put('/:id/status', authenticate, authorizeAdmin, mongoIdValidation, updateOrderStatus)
+
+// Single order route (must come last)
+router.get('/:id', authenticate, mongoIdValidation, getOrderById)
 
 export default router

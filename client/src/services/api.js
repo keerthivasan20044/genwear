@@ -2,10 +2,12 @@ import axios from 'axios';
 import mockAPI from './mockAPI.js';
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-const API_URL = BASE_URL.endsWith('/api') ? BASE_URL : `${BASE_URL}/api`;
+const API_URL = BASE_URL.includes('/api') ? BASE_URL : `${BASE_URL}/api`;
 
 // Check if we're in production without a backend
-const USE_MOCK_API = !import.meta.env.VITE_API_URL || import.meta.env.VITE_USE_MOCK === 'true';
+// Check if we're in production without a backend
+const USE_MOCK_API = true; // Force usage of improved Mock API with Enhanced Products
+
 
 const api = axios.create({
     baseURL: API_URL,
@@ -57,7 +59,7 @@ export const authAPI = {
 export const productAPI = {
     getProducts: (params) => USE_MOCK_API ? mockAPI.getProducts(params) : api.get('/products', { params }),
     getProductById: (id) => USE_MOCK_API ? mockAPI.getProductById(id) : api.get(`/products/${id}`),
-    search: (q) => USE_MOCK_API ? mockAPI.getProducts({search: q}) : api.get('/products/search', { params: { q } }),
+    search: (q) => USE_MOCK_API ? mockAPI.getProducts({ search: q }) : api.get('/products/search', { params: { q } }),
 };
 
 export const cartAPI = {
@@ -71,9 +73,16 @@ export const cartAPI = {
 export const orderAPI = {
     create: (orderData) => USE_MOCK_API ? mockAPI.createOrder(orderData) : api.post('/orders', orderData),
     getMyOrders: () => USE_MOCK_API ? mockAPI.getMyOrders() : api.get('/orders/myorders'),
-    getOrderById: (id) => USE_MOCK_API ? Promise.resolve({}) : api.get(`/orders/${id}`),
+    getOrderById: (id) => USE_MOCK_API ? mockAPI.getOrderById(id) : api.get(`/orders/${id}`),
 };
 
 export const adminAPI = {
     getDashboard: () => USE_MOCK_API ? mockAPI.getDashboard() : api.get('/admin/dashboard'),
+    getOrders: () => USE_MOCK_API ? mockAPI.getOrders() : api.get('/orders/all'),
+    updateOrderStatus: (id, status) => USE_MOCK_API ? Promise.resolve({}) : api.put(`/orders/${id}/status`, { status }),
+    getCustomers: () => USE_MOCK_API ? mockAPI.getCustomers() : api.get('/admin/customers'),
+    toggleBlockCustomer: (id) => USE_MOCK_API ? Promise.resolve({}) : api.put(`/admin/customers/${id}/block`),
+    createProduct: (data) => USE_MOCK_API ? Promise.resolve({}) : api.post('/products', data),
+    updateProduct: (id, data) => USE_MOCK_API ? Promise.resolve({}) : api.put(`/products/${id}`, data),
+    deleteProduct: (id) => USE_MOCK_API ? Promise.resolve({}) : api.delete(`/products/${id}`),
 };

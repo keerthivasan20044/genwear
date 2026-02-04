@@ -36,7 +36,7 @@ const Cart = () => {
 
     if (items.length === 0) {
         return (
-            <div className="min-h-screen bg-gray-50 pt-32 pb-24 flex flex-col items-center justify-center px-4">
+            <div className="min-h-screen bg-gray-50 pt-24 pb-24 flex flex-col items-center justify-center px-4">
                 <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}

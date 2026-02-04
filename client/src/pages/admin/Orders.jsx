@@ -8,7 +8,7 @@ import { FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiClock, FiMapPin, FiPhon
 
 function AdminOrders() {
     const navigate = useNavigate()
-    const { user } = useSelector((state) => state.auth)
+    const { userInfo: user } = useSelector((state) => state.auth)
     const [orders, setOrders] = useState([])
     const [loading, setLoading] = useState(true)
 
@@ -65,9 +65,9 @@ function AdminOrders() {
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-32">
-            <div className="mb-12">
-                <h1 className="font-heading text-4xl font-black text-primary uppercase tracking-tighter">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pt-24">
+            <div className="mb-8">
+                <h1 className="font-heading text-3xl font-black text-primary uppercase tracking-tighter">
                     Manage <span className="text-accent underline decoration-8 underline-offset-[-4px]">Orders</span>
                 </h1>
                 <p className="text-[10px] font-black text-muted uppercase tracking-widest mt-2">Order Management Center — Global List</p>

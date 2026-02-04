@@ -1,8 +1,7 @@
-const CACHE_NAME = 'genwear-v1'
+const CACHE_NAME = 'genwear-v2'
 const urlsToCache = [
   '/',
-  '/static/js/bundle.js',
-  '/static/css/main.css',
+  '/index.html',
   '/manifest.json'
 ]
 
@@ -14,9 +13,13 @@ self.addEventListener('install', event => {
 })
 
 self.addEventListener('fetch', event => {
+  // Only handle GET requests
+  if (event.request.method !== 'GET') return;
+
   event.respondWith(
     caches.match(event.request)
       .then(response => {
+        // Cache hit - return response
         if (response) {
           return response
         }

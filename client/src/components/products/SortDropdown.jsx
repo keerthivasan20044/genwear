@@ -3,14 +3,15 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown, BarChart2 } from 'lucide-react'
 
 const SORT_OPTIONS = [
-    { label: 'Latest Protocol', value: 'newest' },
-    { label: 'Value: Low to High', value: 'price_asc' },
-    { label: 'Value: High to Low', value: 'price_desc' },
+    { label: 'Newest Arrivals', value: 'newest' },
+    { label: 'Price: Low to High', value: 'price-low' },
+    { label: 'Price: High to Low', value: 'price-high' },
+    { label: 'Top Rated', value: 'rating' },
 ]
 
-function SortDropdown({ currentSort, onSortChange }) {
+function SortDropdown({ value, onChange }) {
     const [isOpen, setIsOpen] = useState(false)
-    const selectedOption = SORT_OPTIONS.find(opt => opt.value === currentSort) || SORT_OPTIONS[0]
+    const selectedOption = SORT_OPTIONS.find(opt => opt.value === value) || SORT_OPTIONS[0]
 
     return (
         <div className="relative">
@@ -36,11 +37,11 @@ function SortDropdown({ currentSort, onSortChange }) {
                                 <button
                                     key={opt.value}
                                     onClick={() => {
-                                        onSortChange(opt.value)
+                                        onChange(opt.value)
                                         setIsOpen(false)
                                     }}
-                                    className={`w-full text-left px-5 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors ${currentSort === opt.value
-                                        ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20'
+                                    className={`w-full text-left px-5 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors ${value === opt.value
+                                        ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/20'
                                         : 'text-gray-700 hover:bg-gray-50'
                                         }`}
                                 >

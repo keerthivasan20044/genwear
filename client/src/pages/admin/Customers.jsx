@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { apiService } from '../../services/apiService'
+import axios from '../../utils/axios'
 import { toast } from 'react-toastify'
 import { FiUser, FiMail, FiCalendar, FiShield, FiSlash, FiCheck } from 'react-icons/fi'
 
 function AdminCustomers() {
     const navigate = useNavigate()
-    const { user } = useSelector((state) => state.auth)
+    const { userInfo: user } = useSelector((state) => state.auth)
     const [customers, setCustomers] = useState([])
     const [loading, setLoading] = useState(true)
 

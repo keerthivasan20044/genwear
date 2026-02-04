@@ -18,7 +18,7 @@ const Navbar = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const { user } = useSelector(state => state.auth);
+    const { userInfo } = useSelector(state => state.auth);
     const { totalItems, isOpen: cartDrawerOpen } = useSelector(state => state.cart);
 
     useEffect(() => {
@@ -45,7 +45,7 @@ const Navbar = () => {
     const handleSearch = (e) => {
         e.preventDefault();
         if (searchTerm.trim()) {
-            navigate(`/products?q=${encodeURIComponent(searchTerm.trim())}`);
+            navigate(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
             setSearchOpen(false);
             setSearchTerm('');
         }
@@ -146,19 +146,19 @@ const Navbar = () => {
                                             exit={{ opacity: 0, y: 15, scale: 0.95 }}
                                             className="absolute right-0 mt-4 w-72 bg-white rounded-[2rem] shadow-2xl border border-gray-100 py-2 z-[60] overflow-hidden"
                                         >
-                                            {user ? (
+                                            {userInfo ? (
                                                 <>
                                                     <div className="px-6 py-6 bg-gray-50/50 border-b border-gray-100">
-                                                        <p className="text-xs font-black text-gray-400 tracking-widest uppercase mb-1">Authenticated</p>
-                                                        <p className="text-sm font-black text-gray-900 truncate uppercase tracking-tighter">{user.firstName} {user.lastName}</p>
+                                                        <p className="text-xs font-black text-gray-400 tracking-widest uppercase mb-1">Account</p>
+                                                        <p className="text-sm font-black text-gray-900 truncate uppercase tracking-tighter">{userInfo.firstName} {userInfo.lastName}</p>
                                                     </div>
                                                     <div className="p-2 space-y-1">
-                                                        {user.role === 'admin' && (
+                                                        {userInfo.role === 'admin' && (
                                                             <Link to="/admin" className="flex items-center gap-4 px-6 py-4 text-xs font-black text-orange-600 hover:bg-orange-50 rounded-2xl transition-all uppercase tracking-widest border-b border-orange-100/50 mb-1"><ShieldCheck size={18} /> Dashboard</Link>
                                                         )}
                                                         <Link to="/profile" className="flex items-center gap-4 px-6 py-4 text-xs font-black text-gray-600 hover:bg-gray-50 rounded-2xl hover:text-orange-600 transition-all uppercase tracking-widest"><User size={18} /> Profile</Link>
                                                         <Link to="/orders" className="flex items-center gap-4 px-6 py-4 text-xs font-black text-gray-600 hover:bg-gray-50 rounded-2xl hover:text-orange-600 transition-all uppercase tracking-widest"><ShoppingBag size={18} /> Orders</Link>
-                                                        <button onClick={handleLogout} className="flex items-center gap-4 px-6 py-4 text-xs font-black text-red-600 hover:bg-red-50 rounded-2xl transition-all uppercase tracking-widest w-full text-left"><LogOut size={18} /> Terminate</button>
+                                                        <button onClick={handleLogout} className="flex items-center gap-4 px-6 py-4 text-xs font-black text-red-600 hover:bg-red-50 rounded-2xl transition-all uppercase tracking-widest w-full text-left"><LogOut size={18} /> Logout</button>
                                                     </div>
                                                 </>
                                             ) : (
@@ -203,7 +203,7 @@ const Navbar = () => {
                                         type="text"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        placeholder="TYPE TO DISCOVER..."
+                                        placeholder="SEARCH PRODUCTS..."
                                         className="w-full bg-transparent border-b-8 border-white/10 py-10 text-4xl md:text-7xl font-black text-white uppercase focus:outline-none focus:border-orange-500 transition-all placeholder:text-white/10 tracking-tighter"
                                         autoFocus
                                     />
@@ -248,7 +248,7 @@ const Navbar = () => {
                         </div>
 
                         <div className="pt-12 border-t border-gray-100 flex gap-4">
-                            {user ? (
+                            {userInfo ? (
                                 <>
                                     <button onClick={() => { navigate('/profile'); setMobileMenuOpen(false); }} className="flex-1 py-4 bg-gray-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest">Profile</button>
                                     <button onClick={handleLogout} className="flex-1 py-4 bg-orange-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest">Logout</button>

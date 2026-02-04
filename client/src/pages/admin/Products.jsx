@@ -8,7 +8,7 @@ import { FiEdit2, FiTrash2, FiPlus, FiX } from 'react-icons/fi'
 
 function AdminProducts() {
     const navigate = useNavigate()
-    const { user } = useSelector((state) => state.auth)
+    const { userInfo: user } = useSelector((state) => state.auth)
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
     const [showModal, setShowModal] = useState(false)
@@ -133,10 +133,10 @@ function AdminProducts() {
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-32">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pt-24">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
                 <div>
-                    <h1 className="font-heading text-4xl font-black text-primary uppercase tracking-tighter">
+                    <h1 className="font-heading text-3xl font-black text-primary uppercase tracking-tighter">
                         Manage <span className="text-accent underline decoration-8 underline-offset-[-4px]">Products</span>
                     </h1>
                     <p className="text-[10px] font-black text-muted uppercase tracking-widest mt-2">{products?.length || 0} Products Available</p>

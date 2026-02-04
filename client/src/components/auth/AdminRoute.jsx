@@ -3,14 +3,14 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const AdminRoute = ({ children }) => {
-    const { user } = useSelector((state) => state.auth);
+    const { userInfo } = useSelector((state) => state.auth);
     const location = useLocation();
 
-    if (!user) {
+    if (!userInfo) {
         return <Navigate to={`/login?redirect=${location.pathname}`} replace />;
     }
 
-    if (user.role !== 'admin') {
+    if (userInfo.role !== 'admin') {
         return <Navigate to="/" replace />;
     }
 

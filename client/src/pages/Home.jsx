@@ -5,7 +5,7 @@ import { fetchProducts } from '../redux/slices/productSlice';
 import ProductCard from '../components/products/ProductCard';
 import { motion } from 'framer-motion';
 import { ArrowRight, Truck, Shield, RefreshCcw, Award, Play, Star, Zap } from 'lucide-react';
-import { mockProducts } from '../data/mockProducts';
+import { MOCK_PRODUCTS } from '../services/mockAPI';
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const Home = () => {
 
     // Use mock products if API is empty
     const trendingProducts = useMemo(() => {
-        const source = (apiProducts && apiProducts.length > 0) ? apiProducts : mockProducts;
+        const source = (apiProducts && apiProducts.length > 0) ? apiProducts : MOCK_PRODUCTS;
         return source.slice(0, 4); // Get first 4 for trending
     }, [apiProducts]);
 
@@ -54,8 +54,8 @@ const Home = () => {
 
     return (
         <div className="min-h-screen bg-white">
-            {/* Massive Hero Section */}
-            <section className="relative h-screen flex items-center overflow-hidden">
+            {/* Refined Hero Section */}
+            <section className="relative h-[80vh] flex items-center overflow-hidden">
                 <div className="absolute inset-0 z-0">
                     <img
                         src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=1920&q=90"
@@ -71,14 +71,14 @@ const Home = () => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 1 }}
                     >
-                        <div className="flex items-center gap-4 mb-8">
-                            <Zap className="text-orange-500 fill-orange-500" size={24} />
-                            <p className="text-sm font-black text-orange-500 uppercase tracking-[0.4em]">GENWEAR VOL. 2026</p>
+                        <div className="flex items-center gap-4 mb-6">
+                            <Zap className="text-orange-500 fill-orange-500" size={20} />
+                            <p className="text-xs font-black text-orange-500 uppercase tracking-[0.4em]">GENWEAR VOL. 2026</p>
                         </div>
-                        <h1 className="text-7xl md:text-9xl font-black text-white leading-none uppercase tracking-tighter mb-8">
+                        <h1 className="text-5xl md:text-8xl font-black text-white leading-none uppercase tracking-tighter mb-6">
                             STREET <br /> <span className="text-orange-500">LEGACY</span>
                         </h1>
-                        <p className="text-xl text-gray-300 mb-12 max-w-xl font-bold uppercase tracking-tight leading-relaxed">
+                        <p className="text-sm md:text-base text-gray-300 mb-10 max-w-lg font-bold uppercase tracking-tight leading-relaxed">
                             Elite technical apparel for the modern world. Engineered for performance, designed for style.
                         </p>
                         <div className="flex flex-wrap gap-6">
@@ -134,10 +134,10 @@ const Home = () => {
                             >
                                 <img src={col.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 grayscale-[0.2] group-hover:grayscale-0" alt={col.title} />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
-                                <div className="absolute bottom-12 left-12">
+                                <div className="absolute bottom-8 left-8 right-8 md:bottom-12 md:left-12">
                                     <p className="text-[10px] font-black text-orange-400 uppercase tracking-[0.4em] mb-4">{col.subtitle}</p>
-                                    <h3 className="text-4xl font-black text-white uppercase tracking-tighter mb-8 leading-none">{col.title}</h3>
-                                    <Link to={col.path} className="px-10 py-4 bg-white text-black rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] hover:bg-orange-600 hover:text-white transition-all inline-flex items-center gap-3">
+                                    <h3 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter mb-8 leading-none">{col.title}</h3>
+                                    <Link to={col.path} className="px-8 py-3 md:px-10 md:py-4 bg-white text-black rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] hover:bg-orange-600 hover:text-white transition-all inline-flex items-center gap-3">
                                         VIEW NOW <ArrowRight size={16} />
                                     </Link>
                                 </div>

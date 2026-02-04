@@ -5,12 +5,12 @@ import { useSelector } from 'react-redux'
 // Hook for tracking user analytics
 export const useAnalytics = () => {
     const { socket } = useSocket()
-    const { user } = useSelector(state => state.auth)
+    const { userInfo } = useSelector(state => state.auth)
 
     const trackPageView = (page, referrer = document.referrer) => {
         if (socket) {
             socket.emit('track-page', {
-                userId: user?._id,
+                userId: userInfo?._id,
                 page,
                 referrer,
                 userAgent: navigator.userAgent,
@@ -22,7 +22,7 @@ export const useAnalytics = () => {
     const trackProductView = (productId, category, price) => {
         if (socket) {
             socket.emit('track-product-view', {
-                userId: user?._id,
+                userId: userInfo?._id,
                 productId,
                 category,
                 price,
@@ -34,7 +34,7 @@ export const useAnalytics = () => {
     const trackCartAction = (action, productId, quantity = 1) => {
         if (socket) {
             socket.emit('track-cart-action', {
-                userId: user?._id,
+                userId: userInfo?._id,
                 action, // 'add' or 'remove'
                 productId,
                 quantity,
@@ -55,18 +55,18 @@ export const useNotifications = () => {
     const [notifications, setNotifications] = useState([])
     const [unreadCount, setUnreadCount] = useState(0)
     const { socket } = useSocket()
-    const { user } = useSelector(state => state.auth)
+    const { userInfo } = useSelector(state => state.auth)
 
     useEffect(() => {
-        if (socket && user) {
+        if (socket && userInfo) {
             // Listen for new notifications
-            socket.on(`notification-${user._id}`, (notification) => {
+            socket.on(`notification-${userInfo._id}`, (notification) => {
                 setNotifications(prev => [notification, ...prev])
                 setUnreadCount(prev => prev + 1)
             })
 
             // Listen for order updates
-            socket.on(`order-update-${user._id}`, (orderUpdate) => {
+            socket.on(`order-update-${userInfo._id}`, (orderUpdate) => {
                 const notification = {
                     id: Date.now(),
                     type: 'order_update',
@@ -80,15 +80,15 @@ export const useNotifications = () => {
             })
 
             return () => {
-                socket.off(`notification-${user._id}`)
-                socket.off(`order-update-${user._id}`)
+                socket.off(`notification-${userInfo._id}`)
+                socket.off(`order-update-${userInfo._id}`)
             }
         }
-    }, [socket, user])
+    }, [socket, userInfo])
 
     const markAsRead = (notificationId) => {
-        setNotifications(prev => 
-            prev.map(n => 
+        setNotifications(prev =>
+            prev.map(n =>
                 n.id === notificationId ? { ...n, read: true } : n
             )
         )
@@ -111,20 +111,20 @@ export const useNotifications = () => {
 // Hook for real-time cart sync
 export const useCartSync = () => {
     const { socket } = useSocket()
-    const { user } = useSelector(state => state.auth)
+    const { userInfo } = useSelector(state => state.auth)
     const [cartData, setCartData] = useState(null)
 
     useEffect(() => {
-        if (socket && user) {
-            socket.on(`cart-sync-${user._id}`, (data) => {
+        if (socket && userInfo) {
+            socket.on(`cart-sync-${userInfo._id}`, (data) => {
                 setCartData(data)
             })
 
             return () => {
-                socket.off(`cart-sync-${user._id}`)
+                socket.off(`cart-sync-${userInfo._id}`)
             }
         }
-    }, [socket, user])
+    }, [socket, userInfo])
 
     return cartData
 }

@@ -1,1 +1,225 @@
-import React, { useState, useEffect } from 'react'\nimport { ChevronDown, ChevronUp, X, Filter } from 'lucide-react'\nimport { motion, AnimatePresence } from 'framer-motion'\n\nconst FilterSidebar = ({ \n  filters = {}, \n  activeFilters = {}, \n  onFilterChange, \n  onClearFilters,\n  className = '',\n  isMobile = false,\n  isOpen = true,\n  onClose\n}) => {\n  const [expandedSections, setExpandedSections] = useState({\n    category: true,\n    gender: true,\n    price: true,\n    brand: false,\n    color: false,\n    size: false\n  })\n\n  const [priceRange, setPriceRange] = useState({\n    min: activeFilters.minPrice || filters.priceRange?.min || 0,\n    max: activeFilters.maxPrice || filters.priceRange?.max || 1000\n  })\n\n  const toggleSection = (section) => {\n    setExpandedSections(prev => ({\n      ...prev,\n      [section]: !prev[section]\n    }))\n  }\n\n  const handleFilterChange = (type, value) => {\n    onFilterChange({ [type]: value })\n  }\n\n  const handlePriceChange = (type, value) => {\n    const newRange = { ...priceRange, [type]: parseFloat(value) }\n    setPriceRange(newRange)\n    onFilterChange({ minPrice: newRange.min, maxPrice: newRange.max })\n  }\n\n  const getActiveFilterCount = () => {\n    return Object.keys(activeFilters).filter(key => \n      activeFilters[key] && activeFilters[key] !== ''\n    ).length\n  }\n\n  const FilterSection = ({ title, children, sectionKey, count }) => (\n    <div className=\"border-b border-gray-100 last:border-b-0\">\n      <button\n        onClick={() => toggleSection(sectionKey)}\n        className=\"w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors\"\n      >\n        <div className=\"flex items-center gap-2\">\n          <span className=\"font-medium text-gray-900\">{title}</span>\n          {count > 0 && (\n            <span className=\"bg-orange-100 text-orange-600 text-xs px-2 py-1 rounded-full\">\n              {count}\n            </span>\n          )}\n        </div>\n        {expandedSections[sectionKey] ? \n          <ChevronUp className=\"w-4 h-4 text-gray-500\" /> : \n          <ChevronDown className=\"w-4 h-4 text-gray-500\" />\n        }\n      </button>\n      \n      <AnimatePresence>\n        {expandedSections[sectionKey] && (\n          <motion.div\n            initial={{ height: 0, opacity: 0 }}\n            animate={{ height: 'auto', opacity: 1 }}\n            exit={{ height: 0, opacity: 0 }}\n            transition={{ duration: 0.2 }}\n            className=\"overflow-hidden\"\n          >\n            <div className=\"px-4 pb-4\">\n              {children}\n            </div>\n          </motion.div>\n        )}\n      </AnimatePresence>\n    </div>\n  )\n\n  const FilterOption = ({ value, label, isActive, onChange, type = 'radio' }) => (\n    <label className=\"flex items-center gap-3 py-2 cursor-pointer hover:bg-gray-50 rounded-lg px-2 transition-colors\">\n      <input\n        type={type}\n        checked={isActive}\n        onChange={(e) => onChange(e.target.checked ? value : '')}\n        className=\"w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500\"\n      />\n      <span className={`text-sm ${isActive ? 'text-orange-600 font-medium' : 'text-gray-700'}`}>\n        {label}\n      </span>\n    </label>\n  )\n\n  if (isMobile && !isOpen) return null\n\n  return (\n    <>\n      {/* Mobile Overlay */}\n      {isMobile && isOpen && (\n        <div \n          className=\"fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden\"\n          onClick={onClose}\n        />\n      )}\n      \n      {/* Filter Sidebar */}\n      <motion.div\n        initial={isMobile ? { x: '-100%' } : { x: 0 }}\n        animate={isMobile ? { x: isOpen ? 0 : '-100%' } : { x: 0 }}\n        transition={{ type: 'tween', duration: 0.3 }}\n        className={`\n          ${isMobile ? 'fixed left-0 top-0 h-full w-80 z-50' : 'sticky top-24 h-fit'}\n          bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden\n          ${className}\n        `}\n      >\n        {/* Header */}\n        <div className=\"flex items-center justify-between p-4 border-b border-gray-100 bg-gray-50\">\n          <div className=\"flex items-center gap-2\">\n            <Filter className=\"w-5 h-5 text-gray-600\" />\n            <h3 className=\"font-semibold text-gray-900\">Filters</h3>\n            {getActiveFilterCount() > 0 && (\n              <span className=\"bg-orange-600 text-white text-xs px-2 py-1 rounded-full\">\n                {getActiveFilterCount()}\n              </span>\n            )}\n          </div>\n          \n          <div className=\"flex items-center gap-2\">\n            {getActiveFilterCount() > 0 && (\n              <button\n                onClick={onClearFilters}\n                className=\"text-sm text-orange-600 hover:text-orange-700 font-medium\"\n              >\n                Clear All\n              </button>\n            )}\n            {isMobile && (\n              <button\n                onClick={onClose}\n                className=\"p-1 hover:bg-gray-200 rounded-lg transition-colors\"\n              >\n                <X className=\"w-5 h-5 text-gray-500\" />\n              </button>\n            )}\n          </div>\n        </div>\n\n        {/* Filter Content */}\n        <div className=\"max-h-[calc(100vh-200px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100\">\n          {/* Category Filter */}\n          <FilterSection \n            title=\"Category\" \n            sectionKey=\"category\"\n            count={activeFilters.category ? 1 : 0}\n          >\n            <div className=\"space-y-1\">\n              {filters.categories?.map(category => (\n                <FilterOption\n                  key={category}\n                  value={category}\n                  label={category.charAt(0).toUpperCase() + category.slice(1)}\n                  isActive={activeFilters.category === category}\n                  onChange={(checked) => handleFilterChange('category', checked ? category : '')}\n                />\n              ))}\n            </div>\n          </FilterSection>\n\n          {/* Gender Filter */}\n          <FilterSection \n            title=\"Gender\" \n            sectionKey=\"gender\"\n            count={activeFilters.gender ? 1 : 0}\n          >\n            <div className=\"space-y-1\">\n              {['men', 'women', 'kids', 'unisex'].map(gender => (\n                <FilterOption\n                  key={gender}\n                  value={gender}\n                  label={gender.charAt(0).toUpperCase() + gender.slice(1)}\n                  isActive={activeFilters.gender === gender}\n                  onChange={(checked) => handleFilterChange('gender', checked ? gender : '')}\n                />\n              ))}\n            </div>\n          </FilterSection>\n\n          {/* Price Range Filter */}\n          <FilterSection \n            title=\"Price Range\" \n            sectionKey=\"price\"\n            count={(activeFilters.minPrice || activeFilters.maxPrice) ? 1 : 0}\n          >\n            <div className=\"space-y-4\">\n              <div className=\"flex items-center gap-4\">\n                <div className=\"flex-1\">\n                  <label className=\"block text-xs text-gray-500 mb-1\">Min</label>\n                  <input\n                    type=\"number\"\n                    value={priceRange.min}\n                    onChange={(e) => handlePriceChange('min', e.target.value)}\n                    className=\"w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500\"\n                    placeholder=\"0\"\n                  />\n                </div>\n                <div className=\"flex-1\">\n                  <label className=\"block text-xs text-gray-500 mb-1\">Max</label>\n                  <input\n                    type=\"number\"\n                    value={priceRange.max}\n                    onChange={(e) => handlePriceChange('max', e.target.value)}\n                    className=\"w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500\"\n                    placeholder=\"1000\"\n                  />\n                </div>\n              </div>\n              \n              {/* Price Range Slider */}\n              <div className=\"relative\">\n                <input\n                  type=\"range\"\n                  min={filters.priceRange?.min || 0}\n                  max={filters.priceRange?.max || 1000}\n                  value={priceRange.max}\n                  onChange={(e) => handlePriceChange('max', e.target.value)}\n                  className=\"w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider\"\n                />\n                <div className=\"flex justify-between text-xs text-gray-500 mt-1\">\n                  <span>${filters.priceRange?.min || 0}</span>\n                  <span>${filters.priceRange?.max || 1000}</span>\n                </div>\n              </div>\n            </div>\n          </FilterSection>\n\n          {/* Brand Filter */}\n          {filters.brands?.length > 0 && (\n            <FilterSection \n              title=\"Brand\" \n              sectionKey=\"brand\"\n              count={activeFilters.brand ? 1 : 0}\n            >\n              <div className=\"space-y-1\">\n                {filters.brands.map(brand => (\n                  <FilterOption\n                    key={brand}\n                    value={brand}\n                    label={brand}\n                    isActive={activeFilters.brand === brand}\n                    onChange={(checked) => handleFilterChange('brand', checked ? brand : '')}\n                  />\n                ))}\n              </div>\n            </FilterSection>\n          )}\n\n          {/* Color Filter */}\n          {filters.colors?.length > 0 && (\n            <FilterSection \n              title=\"Color\" \n              sectionKey=\"color\"\n              count={activeFilters.color ? 1 : 0}\n            >\n              <div className=\"grid grid-cols-2 gap-2\">\n                {filters.colors.map(color => (\n                  <FilterOption\n                    key={color}\n                    value={color}\n                    label={color}\n                    isActive={activeFilters.color === color}\n                    onChange={(checked) => handleFilterChange('color', checked ? color : '')}\n                  />\n                ))}\n              </div>\n            </FilterSection>\n          )}\n\n          {/* Size Filter */}\n          {filters.sizes?.length > 0 && (\n            <FilterSection \n              title=\"Size\" \n              sectionKey=\"size\"\n              count={activeFilters.size ? 1 : 0}\n            >\n              <div className=\"grid grid-cols-4 gap-2\">\n                {filters.sizes.map(size => (\n                  <button\n                    key={size}\n                    onClick={() => handleFilterChange('size', activeFilters.size === size ? '' : size)}\n                    className={`\n                      px-3 py-2 text-sm border rounded-lg transition-colors\n                      ${\n                        activeFilters.size === size\n                          ? 'border-orange-600 bg-orange-50 text-orange-600'\n                          : 'border-gray-300 hover:border-gray-400'\n                      }\n                    `}\n                  >\n                    {size}\n                  </button>\n                ))}\n              </div>\n            </FilterSection>\n          )}\n        </div>\n      </motion.div>\n    </>\n  )\n}\n\nexport default FilterSidebar
+import React, { useState } from 'react'
+import { ChevronDown, ChevronUp, X, Filter, Zap, Layout, IndianRupee } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+
+const FilterSidebar = ({
+  filters = {},
+  activeFilters = {},
+  onFilterChange,
+  onClearFilters,
+  className = '',
+  isMobile = false,
+  isOpen = true,
+  onClose
+}) => {
+  const [expandedSections, setExpandedSections] = useState({
+    category: true,
+    gender: true,
+    price: true
+  })
+
+  const [priceRange, setPriceRange] = useState({
+    min: activeFilters.minPrice || 0,
+    max: activeFilters.maxPrice || 50000
+  })
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }))
+  }
+
+  const handleFilterChange = (type, value) => {
+    onFilterChange({ [type]: value })
+  }
+
+  const handlePriceChange = (type, value) => {
+    const val = value === '' ? (type === 'min' ? 0 : 50000) : parseFloat(value)
+    const newRange = { ...priceRange, [type]: val }
+    setPriceRange(newRange)
+    onFilterChange({ minPrice: newRange.min, maxPrice: newRange.max })
+  }
+
+  const getActiveFilterCount = () => {
+    return Object.keys(activeFilters).filter(key =>
+      activeFilters[key] && activeFilters[key] !== '' && key !== 'sort'
+    ).length
+  }
+
+  if (isMobile && !isOpen) return null
+
+  const SectionHeader = ({ id, label, icon: Icon }) => (
+    <button
+      onClick={() => toggleSection(id)}
+      className="w-full flex items-center justify-between py-6 group"
+    >
+      <div className="flex items-center gap-4">
+        <div className="w-8 h-8 rounded-xl bg-gray-50 flex items-center justify-center group-hover:bg-orange-600 group-hover:text-white transition-all duration-300">
+          <Icon size={14} className="font-bold" />
+        </div>
+        <span className="text-[11px] font-black uppercase tracking-[0.3em] text-gray-900">{label}</span>
+      </div>
+      <motion.div
+        animate={{ rotate: expandedSections[id] ? 180 : 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <ChevronDown size={16} className="text-gray-400" />
+      </motion.div>
+    </button>
+  )
+
+  return (
+    <div className={`space-y-12 select-none ${className}`}>
+      {/* Active Selection Header */}
+      <div className="flex items-center justify-between pb-8 border-b-2 border-gray-100">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-orange-600 text-white rounded-lg shadow-lg shadow-orange-600/20">
+            <Filter size={16} />
+          </div>
+          <h3 className="text-sm font-black uppercase tracking-[0.2em] text-gray-900">Filters</h3>
+          {getActiveFilterCount() > 0 && (
+            <span className="flex items-center justify-center w-5 h-5 bg-black text-white text-[9px] font-black rounded-full">
+              {getActiveFilterCount()}
+            </span>
+          )}
+        </div>
+
+        {getActiveFilterCount() > 0 && (
+          <button
+            onClick={onClearFilters}
+            className="text-[9px] font-black uppercase tracking-widest text-orange-600 hover:text-black transition-colors"
+          >
+            Reset All
+          </button>
+        )}
+      </div>
+
+      {/* Filter Sections */}
+      <div className="space-y-2">
+        {/* Shop By Gender */}
+        <div className="border-b border-gray-100">
+          <SectionHeader id="gender" label="Shop By Gender" icon={Zap} />
+          <AnimatePresence initial={false}>
+            {expandedSections.gender && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden pb-6 space-y-3"
+              >
+                {[
+                  { value: 'men', label: 'Men' },
+                  { value: 'women', label: 'Women' },
+                  { value: 'kids', label: 'Kids' }
+                ].map(item => (
+                  <button
+                    key={item.value}
+                    onClick={() => handleFilterChange('gender', activeFilters.gender === item.value ? '' : item.value)}
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl border-2 transition-all duration-300 group
+                      ${activeFilters.gender === item.value
+                        ? 'border-orange-600 bg-orange-50/50'
+                        : 'border-transparent hover:border-gray-100 hover:bg-gray-50'}`}
+                  >
+                    <span className={`text-[10px] font-black uppercase tracking-widest transition-colors
+                      ${activeFilters.gender === item.value ? 'text-orange-600' : 'text-gray-500 group-hover:text-gray-900'}`}>
+                      {item.label}
+                    </span>
+                    {activeFilters.gender === item.value && (
+                      <div className="w-1.5 h-1.5 rounded-full bg-orange-600" />
+                    )}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Collections */}
+        <div className="border-b border-gray-100">
+          <SectionHeader id="category" label="Collections" icon={Layout} />
+          <AnimatePresence initial={false}>
+            {expandedSections.category && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden pb-6 space-y-2"
+              >
+                {['shirts', 'jeans', 'pants', 'tshirts', 'jackets', 'activewear', 'dresses', 'wallets', 'watches'].map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => handleFilterChange('category', activeFilters.category === cat ? '' : cat)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all
+                      ${activeFilters.category === cat ? 'bg-black text-white shadow-xl translate-x-1' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}`}
+                  >
+                    <span className="text-[10px] font-black uppercase tracking-[0.15em]">{cat}</span>
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Price Range */}
+        <div className="border-b border-gray-100">
+          <SectionHeader id="price" label="Price Range" icon={IndianRupee} />
+          <AnimatePresence initial={false}>
+            {expandedSections.price && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden pb-8 px-2"
+              >
+                <div className="grid grid-cols-2 gap-4 mb-8">
+                  <div className="space-y-2">
+                    <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Min</span>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        value={priceRange.min}
+                        onChange={(e) => handlePriceChange('min', e.target.value)}
+                        className="w-full bg-gray-50 border-none rounded-xl px-3 py-3 text-[11px] font-bold text-gray-900 focus:ring-2 focus:ring-orange-500"
+                        placeholder="0"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Max</span>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        value={priceRange.max}
+                        onChange={(e) => handlePriceChange('max', e.target.value)}
+                        className="w-full bg-gray-50 border-none rounded-xl px-3 py-3 text-[11px] font-bold text-gray-900 focus:ring-2 focus:ring-orange-500"
+                        placeholder="50000"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {[500, 1000, 2500, 5000].map(price => (
+                    <button
+                      key={price}
+                      onClick={() => {
+                        setPriceRange({ min: 0, max: price })
+                        onFilterChange({ minPrice: 0, maxPrice: price })
+                      }}
+                      className="w-full text-left px-4 py-2 text-[10px] font-bold text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all"
+                    >
+                      Under ₹{price.toLocaleString()}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default FilterSidebar

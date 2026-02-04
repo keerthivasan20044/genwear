@@ -15,18 +15,18 @@ export const useSocket = () => {
 export const SocketProvider = ({ children }) => {
     const [socket, setSocket] = useState(null)
     const [connected, setConnected] = useState(false)
-    const { user } = useSelector(state => state.auth)
+    const { userInfo } = useSelector(state => state.auth)
 
     useEffect(() => {
-        if (user) {
+        if (userInfo) {
             const newSocket = io(import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5001')
-            
+
             newSocket.on('connect', () => {
                 setConnected(true)
                 console.log('Connected to server')
-                
+
                 // Join admin room if user is admin
-                if (user.role === 'admin') {
+                if (userInfo.role === 'admin') {
                     newSocket.emit('join-admin')
                 }
             })
@@ -42,7 +42,7 @@ export const SocketProvider = ({ children }) => {
                 newSocket.close()
             }
         }
-    }, [user])
+    }, [userInfo])
 
     const value = {
         socket,

@@ -4,7 +4,7 @@ import User from '../models/User.js'
 import Product from '../models/Product.js'
 import Cart from '../models/Cart.js'
 import Order from '../models/Order.js'
-import connectDB from '../config/database.js'
+import connectDB from '../config/db.js'
 
 dotenv.config()
 
@@ -36,7 +36,7 @@ const seedData = async () => {
             lastName: 'Doe',
             email: 'john@example.com',
             password: 'User@123',
-            role: 'user',
+            role: 'customer',
             isVerified: true,
             addresses: [{
                 addressLine: '123 Fashion St',

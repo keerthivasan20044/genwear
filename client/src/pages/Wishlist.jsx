@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import ProductCard from '../components/products/ProductCard';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, ArrowRight, ArrowLeft } from 'lucide-react';
-import { mockProducts } from '../data/mockProducts';
+import { MOCK_PRODUCTS } from '../services/mockAPI';
 
 function Wishlist() {
     const wishlistIds = useSelector((state) => state.wishlist.items);
@@ -12,7 +12,7 @@ function Wishlist() {
 
     // Get product details for the IDs in wishlist
     const wishlistProducts = useMemo(() => {
-        const source = (apiProducts && apiProducts.length > 0) ? apiProducts : mockProducts;
+        const source = (apiProducts && apiProducts.length > 0) ? apiProducts : MOCK_PRODUCTS;
         return source.filter(p => wishlistIds.includes(p._id) || wishlistIds.includes(p.id));
     }, [wishlistIds, apiProducts]);
 

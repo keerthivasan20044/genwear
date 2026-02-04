@@ -13,7 +13,7 @@ const Login = () => {
     const location = useLocation();
 
     const { userInfo, loading, error } = useSelector(state => state.auth);
-    const redirect = new URLSearchParams(location.search).get('redirect') || '/';
+    const redirect = new URLSearchParams(location.search).get('redirect') || '/dashboard';
 
     useEffect(() => {
         if (userInfo) navigate(redirect);
@@ -28,12 +28,16 @@ const Login = () => {
     }, [error, dispatch]);
 
     const handleChange = (e) => {
-        setCredentials({ ...credentials, [e.target.name]: e.target.value });
+        const value = e.target.name === 'email' ? e.target.value.replace(/\s+/g, '') : e.target.value;
+        setCredentials({ ...credentials, [e.target.name]: value });
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(loginUser(credentials));
+        dispatch(loginUser({
+            email: credentials.email.replace(/\s+/g, ''),
+            password: credentials.password
+        }));
     };
 
     return (
@@ -55,10 +59,10 @@ const Login = () => {
                     >
                         <div className="w-20 h-1 bg-accent rounded-full mb-10" />
                         <h1 className="text-7xl font-black text-white uppercase tracking-tighter leading-none mb-8">
-                            Member <br /> <span className="text-accent underline decoration-8 underline-offset-8 decoration-accent/20">Access</span>
+                            Sign <br /> <span className="text-accent underline decoration-8 underline-offset-8 decoration-accent/20">In</span>
                         </h1>
                         <p className="text-lg text-slate-400 font-bold uppercase tracking-tight max-w-md">
-                            Sign in to access your account and view your personalized collection.
+                            Welcome back. Please enter your email and password to access your personalized collection.
                         </p>
                     </motion.div>
 
@@ -86,9 +90,9 @@ const Login = () => {
                     className="w-full max-w-sm space-y-12"
                 >
                     <div className="space-y-4">
-                        <Link to="/" className="text-[10px] font-black uppercase tracking-[0.5em] text-accent mb-2 block">GENWEAR PLATFORM</Link>
+                        <Link to="/" className="text-[10px] font-black uppercase tracking-[0.5em] text-accent mb-2 block">GENWEAR SHOP</Link>
                         <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter leading-none">Account <br /> Login</h2>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Please enter your details to continue</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Enter your details below</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-8">
@@ -149,15 +153,15 @@ const Login = () => {
 
                     <div className="pt-12 border-t border-slate-100 flex flex-col gap-6">
                         <div className="flex items-center justify-between">
-                            <p className="text-[10px] font-bold uppercase tracking-tight text-slate-400">Not in the network?</p>
-                            <Link to="/register" className="text-[10px] font-black uppercase tracking-widest text-slate-900 hover:text-accent transition-all">Request Access</Link>
+                            <p className="text-[10px] font-bold uppercase tracking-tight text-slate-400">New here?</p>
+                            <Link to="/register" className="text-[10px] font-black uppercase tracking-widest text-slate-900 hover:text-accent transition-all">Create Account</Link>
                         </div>
 
                         <div className="p-6 bg-slate-50 rounded-2xl space-y-3">
-                            <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Debug Access</p>
+                            <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Test Credentials</p>
                             <div className="space-y-1">
-                                <p className="text-[9px] font-bold text-slate-500 uppercase">ADMIN @ SYNDICATE.NET / ADMIN@123</p>
-                                <p className="text-[9px] font-bold text-slate-500 uppercase">UNIT @ SYNDICATE.NET / USER@123</p>
+                                <p className="text-[9px] font-bold text-slate-500 uppercase">ADMIN: ADMIN@GENWEAR.COM / admin123</p>
+                                <p className="text-[9px] font-bold text-slate-500 uppercase">USER: john@example.com / User@123</p>
                             </div>
                         </div>
                     </div>

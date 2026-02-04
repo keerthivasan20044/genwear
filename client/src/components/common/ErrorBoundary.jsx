@@ -26,15 +26,15 @@ class ErrorBoundary extends React.Component {
                         <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
                             <AlertTriangle className="w-8 h-8 text-red-600" />
                         </div>
-                        
+
                         <h1 className="text-2xl font-bold text-gray-900 mb-4">
                             Oops! Something went wrong
                         </h1>
-                        
+
                         <p className="text-gray-600 mb-8">
                             We're sorry for the inconvenience. Please try refreshing the page or go back to home.
                         </p>
-                        
+
                         <div className="space-y-3">
                             <button
                                 onClick={() => window.location.reload()}
@@ -43,7 +43,7 @@ class ErrorBoundary extends React.Component {
                                 <RefreshCw className="w-4 h-4" />
                                 Refresh Page
                             </button>
-                            
+
                             <button
                                 onClick={() => window.location.href = '/'}
                                 className="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-200 transition-colors"
@@ -52,7 +52,7 @@ class ErrorBoundary extends React.Component {
                                 Go Home
                             </button>
                         </div>
-                        
+
                         {process.env.NODE_ENV === 'development' && (
                             <details className="mt-8 text-left">
                                 <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
@@ -65,7 +65,7 @@ class ErrorBoundary extends React.Component {
                                     <div>
                                         <strong>Stack:</strong>
                                         <pre className="whitespace-pre-wrap">
-                                            {this.state.errorInfo.componentStack}
+                                            {this.state.errorInfo?.componentStack}
                                         </pre>
                                     </div>
                                 </div>

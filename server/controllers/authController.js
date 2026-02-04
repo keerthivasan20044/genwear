@@ -90,12 +90,8 @@ export const login = async (req, res) => {
 // @access  Private
 export const getMe = async (req, res) => {
     try {
-        const user = await User.findById(req.user._id).select('-password')
-        if (user) {
-            res.json(user)
-        } else {
-            res.status(404).json({ message: 'User not found' })
-        }
+        // req.user is already populated by authMiddleware with password excluded
+        res.json(req.user)
     } catch (error) {
         logger.error('Get profile error:', { error: error.message })
         res.status(500).json({ message: 'Server error' })

@@ -6,7 +6,7 @@ import {
     User, Package, Heart, MapPin, Settings, LogOut, Camera,
     Shield, Terminal, Cpu, Database, ChevronRight, Edit3, Save
 } from 'lucide-react';
-import { logout } from '../redux/slices/authSlice';
+import { logout, updateUser } from '../redux/slices/authSlice';
 import { toast } from 'react-toastify';
 
 const Profile = () => {
@@ -17,14 +17,23 @@ const Profile = () => {
     const [activeTab, setActiveTab] = useState('profile');
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
-        firstName: userInfo?.firstName || '',
-        lastName: userInfo?.lastName || '',
-        email: userInfo?.email || '',
-        phone: userInfo?.phone || ''
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: ''
     });
 
     useEffect(() => {
-        if (!userInfo) navigate('/login');
+        if (!userInfo) {
+            navigate('/login');
+        } else {
+            setFormData({
+                firstName: userInfo.firstName || '',
+                lastName: userInfo.lastName || '',
+                email: userInfo.email || '',
+                phone: userInfo.phone || ''
+            });
+        }
     }, [userInfo, navigate]);
 
     const handleLogout = () => {
@@ -35,7 +44,23 @@ const Profile = () => {
 
     const handleSave = (e) => {
         e.preventDefault();
-        toast.success('Profile updated successfully');
+
+        const updatedUser = {
+            ...userInfo,
+            ...formData
+        };
+
+        // Update Redux
+        dispatch(updateUser(updatedUser));
+
+        // Update local storage
+        const fullInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+        localStorage.setItem('userInfo', JSON.stringify({
+            ...fullInfo,
+            user: updatedUser
+        }));
+
+        toast.success('PROFILE DATA SYNCHRONIZED SUCCESSFULLY');
         setIsEditing(false);
     };
 
@@ -115,6 +140,18 @@ const Profile = () => {
                                     </div>
                                 </button>
                             </nav>
+                        </div>
+
+                        {/* Tactical Stats Panel */}
+                        <div className="mt-8 grid grid-cols-2 gap-4">
+                            <div className="bg-slate-50 border border-slate-100 p-6 rounded-[2rem] text-center">
+                                <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Acquisitions</p>
+                                <p className="text-xl font-black text-slate-900 tracking-tighter">04</p>
+                            </div>
+                            <div className="bg-slate-50 border border-slate-100 p-6 rounded-[2rem] text-center">
+                                <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Network Rank</p>
+                                <p className="text-xl font-black text-orange-600 tracking-tighter italic">VETERAN</p>
+                            </div>
                         </div>
                     </aside>
 

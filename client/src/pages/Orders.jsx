@@ -12,9 +12,10 @@ const Orders = () => {
         const fetchOrders = async () => {
             try {
                 const data = await orderAPI.getMyOrders();
-                setOrders(data);
+                setOrders(Array.isArray(data) ? data : []);
             } catch (error) {
-                console.error(error);
+                console.error('Failed to fetch orders:', error);
+                setOrders([]);
             } finally {
                 setLoading(false);
             }
@@ -79,9 +80,9 @@ const Orders = () => {
                                             <Package size={28} />
                                         </div>
                                         <div>
-                                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2 font-mono">CODE: {order.orderNumber}</p>
+                                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2 font-mono">CODE: {order.orderNumber || order._id?.slice(-8) || 'N/A'}</p>
                                             <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter italic">
-                                                {order.items.length} Component System{order.items.length > 1 ? 's' : ''}
+                                                {(order.orderItems || order.items || []).length} Component System{(order.orderItems || order.items || []).length !== 1 ? 's' : ''}
                                             </h3>
                                         </div>
                                     </div>
@@ -89,13 +90,17 @@ const Orders = () => {
                                     <div className="flex items-center gap-12 w-full lg:w-auto justify-between lg:justify-end border-t lg:border-t-0 pt-8 lg:pt-0 border-slate-200">
                                         <div className="text-left lg:text-right">
                                             <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">Timestamp</p>
-                                            <p className="text-xs font-black text-slate-900 uppercase tracking-tight">{new Date(order.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                                            <p className="text-xs font-black text-slate-900 uppercase tracking-tight">
+                                                {order.createdAt ? new Date(order.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                                            </p>
                                         </div>
                                         <div className="text-left lg:text-right">
                                             <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">Total Yield</p>
-                                            <p className="text-xl font-black text-slate-900">₹{order.pricing.total.toLocaleString('en-IN')}</p>
+                                            <p className="text-xl font-black text-slate-900">
+                                                ₹{((order.pricing?.total || order.totalAmount || order.total || 0)).toLocaleString('en-IN')}
+                                            </p>
                                         </div>
-                                        <StatusBadge status={order.orderStatus} />
+                                        <StatusBadge status={order.orderStatus || order.status || 'pending'} />
                                         <div className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center group-hover:bg-accent group-hover:border-accent group-hover:text-white transition-all">
                                             <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
                                         </div>

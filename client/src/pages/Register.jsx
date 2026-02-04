@@ -94,10 +94,10 @@ const Register = () => {
                     >
                         <div className="w-16 h-1 bg-accent rounded-full mb-10 ml-auto" />
                         <h1 className="text-7xl font-black text-white uppercase tracking-tighter leading-none mb-8">
-                            Join <br /> <span className="text-accent underline decoration-8 underline-offset-8 decoration-accent/20">Genwear</span>
+                            Join <br /> <span className="text-accent underline decoration-8 underline-offset-8 decoration-accent/20">Us</span>
                         </h1>
                         <p className="text-lg text-slate-400 font-bold uppercase tracking-tight ml-auto max-w-sm">
-                            Create your account and start your journey with our exclusive fashion network.
+                            Create your account and become a member of our exclusive fashion network.
                         </p>
                     </motion.div>
 
@@ -127,9 +127,9 @@ const Register = () => {
                     className="w-full max-w-md space-y-12"
                 >
                     <div className="space-y-4">
-                        <Link to="/" className="text-[10px] font-black uppercase tracking-[0.5em] text-accent mb-2 block">GENWEAR PLATFORM</Link>
-                        <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter leading-none">Register <br /> Account</h2>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Create your unique member ID</p>
+                        <Link to="/" className="text-[10px] font-black uppercase tracking-[0.5em] text-accent mb-2 block">GENWEAR SHOP</Link>
+                        <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter leading-none">Sign <br /> Up</h2>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Enter your details to register</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -193,7 +193,7 @@ const Register = () => {
                             {formData.password && (
                                 <div className="mt-4 space-y-2 px-2">
                                     <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-slate-400">
-                                        <span>Security Strength</span>
+                                        <span>Password Strength</span>
                                         <span className={passwordStrength > 3 ? 'text-green-500' : 'text-accent'}>{passwordStrength > 3 ? 'SECURE' : 'WEAK'}</span>
                                     </div>
                                     <div className="h-1 bg-slate-50 rounded-full overflow-hidden">
@@ -248,7 +248,7 @@ const Register = () => {
 
                     <div className="pt-12 border-t border-slate-100 text-center">
                         <p className="text-[10px] font-bold uppercase tracking-tight text-slate-400">Already a member?</p>
-                        <Link to="/login" className="text-[10px] font-black uppercase tracking-widest text-accent hover:underline mt-2 inline-block">Sign in here</Link>
+                        <Link to="/login" className="text-[10px] font-black uppercase tracking-widest text-accent hover:underline mt-2 inline-block">Login here</Link>
                     </div>
                 </motion.div>
             </div>

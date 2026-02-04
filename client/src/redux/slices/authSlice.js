@@ -8,8 +8,17 @@ const userInfoFromStorage = localStorage.getItem('userInfo')
 export const loginUser = createAsyncThunk('auth/login', async (credentials, { rejectWithValue }) => {
     try {
         const data = await authAPI.login(credentials);
-        localStorage.setItem('userInfo', JSON.stringify(data));
-        return data;
+        // Store the complete response for localStorage
+        const userData = {
+            _id: data._id,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            role: data.role,
+            token: data.token
+        };
+        localStorage.setItem('userInfo', JSON.stringify(userData));
+        return userData;
     } catch (error) {
         return rejectWithValue(error);
     }
@@ -18,8 +27,17 @@ export const loginUser = createAsyncThunk('auth/login', async (credentials, { re
 export const registerUser = createAsyncThunk('auth/register', async (userData, { rejectWithValue }) => {
     try {
         const data = await authAPI.register(userData);
-        localStorage.setItem('userInfo', JSON.stringify(data));
-        return data;
+        // Store the complete response for localStorage
+        const userResponse = {
+            _id: data._id,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            role: data.role,
+            token: data.token
+        };
+        localStorage.setItem('userInfo', JSON.stringify(userResponse));
+        return userResponse;
     } catch (error) {
         return rejectWithValue(error);
     }
@@ -28,20 +46,23 @@ export const registerUser = createAsyncThunk('auth/register', async (userData, {
 const authSlice = createSlice({
     name: 'auth',
     initialState: {
-        user: userInfoFromStorage?.user || null,
+        userInfo: userInfoFromStorage || null,
         token: userInfoFromStorage?.token || null,
         loading: false,
         error: null,
     },
     reducers: {
         logout: (state) => {
-            state.user = null;
+            state.userInfo = null;
             state.token = null;
             state.error = null;
             localStorage.removeItem('userInfo');
         },
         clearError: (state) => {
             state.error = null;
+        },
+        updateUser: (state, action) => {
+            state.userInfo = { ...state.userInfo, ...action.payload };
         }
     },
     extraReducers: (builder) => {
@@ -52,7 +73,7 @@ const authSlice = createSlice({
             })
             .addCase(loginUser.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user = action.payload.user;
+                state.userInfo = action.payload;
                 state.token = action.payload.token;
             })
             .addCase(loginUser.rejected, (state, action) => {
@@ -65,7 +86,7 @@ const authSlice = createSlice({
             })
             .addCase(registerUser.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user = action.payload.user;
+                state.userInfo = action.payload;
                 state.token = action.payload.token;
             })
             .addCase(registerUser.rejected, (state, action) => {
@@ -75,5 +96,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { logout, clearError } = authSlice.actions;
+export const { logout, clearError, updateUser } = authSlice.actions;
 export default authSlice.reducer;

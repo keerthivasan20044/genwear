@@ -18,7 +18,7 @@ function AdminDashboard() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { dashboard, loading } = useSelector((state) => state.admin);
-    const { user } = useSelector((state) => state.auth);
+    const { userInfo: user } = useSelector((state) => state.auth);
 
     useEffect(() => {
         if (!user || user.role !== 'admin') {
